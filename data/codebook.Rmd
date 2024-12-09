@@ -7,7 +7,7 @@ date: "2024-12-09"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+### Packages
 **The purpose of each package is as follows:**
 • *"here"* - used for merging file paths (here() function in the code)
 
@@ -20,3 +20,5 @@ knitr::opts_chunk$set(echo = TRUE)
 • *"plotly"* - used to create interactive plots 
 
 • *"htmlwidgets"* - used to save interactive plots as HTML files
+
+### 

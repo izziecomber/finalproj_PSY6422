@@ -30,18 +30,7 @@ Sexual orientation estimates are [Experimental Statistics](https://www.ons.gov.u
 
 ## The project 
 ### Load required libraries 
-The purpose of each package is as follows:
-• "here" - used for merging file paths (here() function in the code)
-
-• "tidyverse" - meta-package that includes dplyr, ggplot2, and other packages within this code
-
-• "dpylr" - used for data manipulation (e.g., %>%, rename, filter, select, mutate, summarise, etc.)
-
-• "ggplot2" - used for creating data visualisation (e.g., ggplot, geom_bar etc.)
-
-• "plotly" - used to create interactive plots 
-
-• "htmlwidgets" - used to save interactive plots as HTML files
+The purpose of each package can be found in the code book which can be found in the /data folder in the [repository](https://github.com/izziecomber/finalproj_PSY6422/tree/main/data)
 ```{r loadlibrary, echo = TRUE, results = 'hide', warning = FALSE, message = FALSE}
 # List of required packages
 required_packages <- c(
