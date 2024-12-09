@@ -1,8 +1,9 @@
 ---
 title: "Index"
-author: "ID: 240188902"
-output: html_document
 date: "2024-12-09"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -343,5 +344,110 @@ ggsave(
   height = 8, # Height of the image in inches
   dpi = 300 # Resolution (dots per inch)
 )
+
+```
+
+### Interactive plot 
+```{r interactive, results='hide', message=FALSE, warning=FALSE}
+# Ensure England and UK estimates are excluded 
+totals_by_region <- totals_by_region %>%
+  filter(!Region %in% c("England est.", "UK est."))
+# Warning message about use of other colour palette 
+# Dynamically generate a colour palette
+dynamic_colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(length(unique(totals_by_region$Region)))
+interactive_line_plot <- plot_ly(
+  data = totals_by_region,
+  x = ~Year,
+  y = ~Total,
+  color = ~Region,
+  type = 'scatter',
+  mode = 'lines+markers',
+  text = ~paste(
+    "Region: ", Region,
+    "<br>Year: ", Year,
+    "<br>Population: ", Total, "k"
+  ),
+  hoverinfo = 'text',
+  colors = dynamic_colors  # Use dynamically generated colors
+) %>%
+  layout(
+    title = "Trends in Population of Queer Sexual Orientation by Region (2014-2022)",
+    xaxis = list(title = "Year", tickvals = seq(2014, 2022, 1)),
+    yaxis = list(title = "Population Estimate (thousands)"),
+    legend = list(orientation = "h", x = 0.1, y = -0.2)
+  )
+
+# Save the interactive plot as an HTML file
+htmlwidgets::saveWidget(
+  widget = interactive_line_plot,
+  file = "plots/interactive_line_plot.html",
+  selfcontained = TRUE                  
+)
+
+# The interactive plot
+interactive_line_plot
+
+```
+
+### Improved interactive plot 
+```{r improved, results='hide', message=FALSE, warning=FALSE}
+# Ensure data is consistent 
+long_data <- long_data %>%
+  mutate(`Sexual orientation` = str_trim(`Sexual orientation`))
+# Aggregate data to calculate total population and breakdown 
+aggregated_data <- long_data %>%
+  group_by(Region, Year) %>%
+  filter(Region != "England est.") %>%
+  filter(Region != "UK est.") %>%
+  summarise(
+    Total = sum(Estimate, na.rm = TRUE),
+    GayLesbian = sum(Estimate[`Sexual orientation` == "Gay or lesbian"], na.rm = TRUE),
+    Bisexual = sum(Estimate[`Sexual orientation` == "Bisexual"], na.rm = TRUE),
+    Other = sum(Estimate[`Sexual orientation` == "Other"], na.rm = TRUE),
+    DontKnowRefuse = sum(Estimate[`Sexual orientation` == "Don't know or refuse"], na.rm = TRUE),
+  ) %>%
+  mutate(
+    Breakdown = paste(
+      "Gay/Lesbian: ", GayLesbian, "k",
+      "<br>Bisexual: ", Bisexual, "k",
+      "<br>Other: ", Other, "k",
+      "<br>Don't Know/Refuse: ", DontKnowRefuse, "k"
+    )
+  ) %>%
+  ungroup()
+# Create the interactive plot
+dynamic_colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(length(unique(aggregated_data$Region)))
+interactive_line_plot <- plot_ly(
+  data = aggregated_data,
+  x = ~Year,
+  y = ~Total,  # Total population for y-axis
+  color = ~Region,
+  type = 'scatter',
+  mode = 'lines+markers',
+  text = ~paste(
+    "Region: ", Region,
+    "<br>Year: ", Year,
+    "<br>Total Population: ", Total, "k",
+    "<br>", Breakdown
+  ),
+  hoverinfo = 'text',
+  colors = dynamic_colors
+) %>%
+  layout(
+    title = "Trends in Population of Queer Sexual Orientation by Region (2014-2022)",
+    xaxis = list(title = "Year", tickvals = seq(2014, 2022, 1)),
+    yaxis = list(title = "Population Estimate (thousands)"),
+    legend = list(orientation = "h", x = 0.1, y = -0.2)
+  )
+
+# Save the interactive plot as an HTML file
+htmlwidgets::saveWidget(
+  widget = interactive_line_plot,
+  file = "plots/interactive_line_plot.html",
+  selfcontained = TRUE
+)
+
+# Display the interactive plot
+interactive_line_plot
 
 ```
