@@ -28,11 +28,20 @@ The raw data was obtained from the Office of National Statistics, from the Annua
 
 Sexual orientation estimates are [Experimental Statistics](https://www.ons.gov.uk/methodology/methodologytopicsandstatisticalconcepts/guidetoexperimentalstatistics) that provide annual estimates of the UK household population aged 16 years and over broken down into heterosexual or straight, gay or lesbian, bisexual, or other, back to 2014 for England, Scotland and Wales, and 2012 for Northern Ireland. The "other" category captures people who do not consider themselves to fit into the heterosexual or straight, bisexual, gay, or lesbian categories; it might also include people who responded "other" for different reasons such as those who did not understand the terminology or who are against categorisation. There is currently no further breakdown of "other" collected in the APS, so no assumptions can be made about the sexual orientation of those responding "other". Data in the bulletin are primarily presented in percentage format, although estimates are used where needed to provide scale to the percentages; estimates of the population numbers and measures of quality (to show the levels of uncertainty associated with survey estimates) are presented in the dataset, users are advised to consult the quality measures when interpreting the estimates. The estimates published from 2016 onwards are calculated from the APS; previously, they were calculated using the Integrated Household Survey (IHS).
 
-## Project Organisation 
-Finish later 
-
 ## The project 
 ### Load required libraries 
+The purpose of each package is as follows:
+• "here" - used for merging file paths (here() function in the code)
+
+• "tidyverse" - meta-package that includes dplyr, ggplot2, and other packages within this code
+
+• "dpylr" - used for data manipulation (e.g., %>%, rename, filter, select, mutate, summarise, etc.)
+
+• "ggplot2" - used for creating data visualisation (e.g., ggplot, geom_bar etc.)
+
+• "plotly" - used to create interactive plots 
+
+• "htmlwidgets" - used to save interactive plots as HTML files
 ```{r loadlibrary, echo = TRUE, results = 'hide', warning = FALSE, message = FALSE}
 # List of required packages
 required_packages <- c(
