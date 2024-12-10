@@ -31,7 +31,7 @@ Sexual orientation estimates are [Experimental Statistics](https://www.ons.gov.u
 ## The project 
 ### Load required libraries 
 The purpose of each package can be found in the code book which can be found in the /data folder in the [repository](https://github.com/izziecomber/finalproj_PSY6422/tree/main/data)
-```{r loadlibrary, echo = TRUE, results = 'hide', warning = FALSE, message = FALSE}
+```{r loadlibrary, echo = TRUE, results = 'hide', warning = FALSE, message = FALSE, cache=TRUE}
 # List of required packages
 required_packages <- c(
   "here",
@@ -57,7 +57,7 @@ lapply(required_packages, library, character.only = TRUE)
 ```
 
 ### Importing data preparation and preparation 
-```{r import, message=FALSE, warning=FALSE, results = 'hide'}
+```{r import, message=FALSE, warning=FALSE, results = 'hide', cache=TRUE}
 # Load data 
 sexuality_dat <- read.csv(here("data/sexual orientation table.xlsx - 1a.csv"))
 
@@ -112,7 +112,7 @@ clean_sex_dat3 <- clean_sex_dat2 %>%
 ```
 
 ## Sanity checks
-```{r expectations, message=FALSE, warning=FALSE, results = 'hide'}
+```{r expectations, message=FALSE, warning=FALSE, results = 'hide', cache=TRUE}
 
 # Checking the minimum and maximum years (should be 2014-2022)
 range(clean_sex_dat3$Year, na.rm = TRUE)
@@ -150,7 +150,7 @@ clean_sex_dat3 %>%
 ```
 
 ## Data visualisation 1 - multiple barplots for regional data 
-```{r, results = 'hide'}
+```{r, results = 'hide', cache=TRUE}
 # Total UK estimates excluded 
 # Had to match columns with 'est'and create new columns for 'Region' and 'Estimates'
 long_reg_data <- clean_sex_dat3 %>%
@@ -183,7 +183,7 @@ ggplot(barplot_dat, aes(x = Year, y = Estimate, fill = `Sexual orientation`)) +
 
 ## Visualisation 2 - improved barchart
 The first visualisation of the identities for each region was helpful to see the data trends across the UK but it was very cluttered and busy. For this plot I decided to use only the total UK estimate data to get feel for the general trend of the population.
-```{r barchart, results = 'hide'}
+```{r barchart, results = 'hide', cache=TRUE}
 # Reshape the data and filter for just UK est. to produce BARCHART
 long_data <- clean_sex_dat3 %>%
   pivot_longer(
@@ -221,7 +221,7 @@ print(imp_barchart)
 
 ## Data visualisation 3 - Multiple line plots on the same graph 
 This is where I started to experiment with the idea of producing a line graph for my final visualisation. So to begin with I produced a basic one. 
-```{r multiplot, results='hide', message=FALSE, warning=FALSE}
+```{r multiplot, results='hide', message=FALSE, warning=FALSE, cache=TRUE}
 # Filter UK-specific data for the line graph
 uk_line_data <- long_data %>%
   filter(Region == "UK est.") %>%  # Focus on "UK est."
@@ -253,7 +253,7 @@ print(line_graph)
 
 ## Data Visualisation 4 - Line plot
 I decided that the break down of regional trends is interesting and would be good to include in the visual output.
-```{r lineplot, results='hide', message=FALSE, warning=FALSE}
+```{r lineplot, results='hide', message=FALSE, warning=FALSE, cache=TRUE}
 # Create totals by region 
 totals_by_region <- clean_sex_dat3 %>%
   pivot_longer(
@@ -304,7 +304,7 @@ ggsave(
 
 ### Presenting the data as specific sexualities rather than a total per region
 This was another experimentation. I wanted to present the breakdown of each queer identity rather than having the total population of queer people. It felt dismissive and reductionist, similarly to using the whole UK data, to group all identities as one for the visualisation. 
-```{r specific_sex, results='hide', message=FALSE, warning=FALSE}
+```{r specific_sex, results='hide', message=FALSE, warning=FALSE, cache=TRUE}
 # Prepare the data for visualization
 long_sex_data <- clean_sex_dat3 %>%
   pivot_longer(
@@ -350,7 +350,7 @@ ggsave(
 
 ### Interactive plot 
 Although I haven't presented it here, I produced an interative plot (similar to the one below) that was quite simple. The information that appeared when you hovered your mouse over the data point was the region, year, and total queer idenities for that region. To improve, I adjusted the code so that the information also included a break down of how many people identified with each individual category.
-```{r improved, results='hide', message=FALSE, warning=FALSE}
+```{r improved, results='hide', message=FALSE, warning=FALSE, cache=TRUE}
 # Ensure data is consistent 
 long_data <- long_data %>%
   mutate(`Sexual orientation` = str_trim(`Sexual orientation`))
@@ -375,8 +375,11 @@ aggregated_data <- long_data %>%
     )
   ) %>%
   ungroup()
+
 # Create the interactive plot
-dynamic_colors <- colorRampPalette(RColorBrewer::brewer.pal(8, "Set2"))(length(unique(aggregated_data$Region)))
+dynamic_colors <- colorRampPalette(c("blue", "green", "red", "purple"))(
+  length(unique(aggregated_data$Region))
+)
 interactive_line_plot <- plot_ly(
   data = aggregated_data,
   x = ~Year,
@@ -406,7 +409,6 @@ htmlwidgets::saveWidget(
   file = "plots/interactive_line_plot.html",
   selfcontained = TRUE
 )
-
 # Display the interactive plot
 interactive_line_plot
 
